@@ -1,27 +1,16 @@
-# CacheLayer Cursor plugin
+# CacheLayer for Cursor
 
-Packages CacheLayer step caching for Cursor agents: an MCP server connection, an always-on interception rule, and a skill that teaches correct tool usage. Agents look up prior step results before acting, conflict-check before edits, and save results after each step so repeated work can be skipped.
+Skip redoing work your Cursor agent already did. CacheLayer caches agent steps so matching work can be reused instead of repeated from scratch.
 
-## What's included
+Website: [https://cachelayer.org/](https://cachelayer.org/)
 
-| Path | Role |
-| --- | --- |
-| `.cursor-plugin/plugin.json` | Plugin manifest |
-| `mcp.json` | CacheLayer MCP SSE endpoint |
-| `rules/cachelayer-interception.mdc` | Always-on lookup / conflict / save enforcement |
-| `skills/cachelayer-tools/SKILL.md` | Correct argument patterns for CacheLayer tools |
+## Getting started
 
-## Local install (testing)
-
-1. Copy this folder to `~/.cursor/plugins/local/cachelayer` with `.cursor-plugin/plugin.json` at the plugin root.
-2. Restart Cursor (or run **Developer: Reload Window**).
-3. Confirm the plugin loads, **CacheLayer** appears in Cursor's MCP list, the interception rule is active, and the `cachelayer-tools` skill is discovered.
-
-The MCP server at the URL in `mcp.json` must be reachable from your machine.
-
-## Auth token (when auth ships)
-
-Add the token under the `CacheLayer` entry in `mcp.json` (for example as a header or `auth` field — exact shape TBD) without changing the SSE URL:
+1. Open **Cursor Settings**.
+2. Go to **Tools & MCP**.
+3. Click **New MCP Server**.
+4. Cursor opens your `mcp.json` file.
+5. Paste this snippet (merge with any servers you already have):
 
 ```json
 {
@@ -33,6 +22,82 @@ Add the token under the `CacheLayer` entry in `mcp.json` (for example as a heade
 }
 ```
 
-## Extract into another repo
+6. Save the file. CacheLayer should appear in your MCP server list.
+7. (Optional) Clone or copy this repo into `~/.cursor/plugins/local/cachelayer` and reload Cursor if you also want the always-on interception rule and tool-usage skill from this package.
 
-This repository is self-contained. Copy the `cachelayer-cursor-plugin/` tree (or clone this repo) into another project, or install from `~/.cursor/plugins/local/cachelayer` as above.
+The CacheLayer MCP server must be reachable from your machine.
+
+When auth ships, add your token under the `CacheLayer` entry in `mcp.json` without changing the URL.
+
+## Features
+
+- **Step lookup** — Before acting, agents can call `lookup_step` to reuse a prior result when there is a hit.
+- **Step save** — After a step finishes, agents call `save_step` so the result is available next time.
+- **Conflict checks** — Before file edits or destructive commands, agents call `check_conflict` and stop if the action is unsafe.
+- **Run tracking** — One `run_id` per task keeps related steps grouped; `run_status` helps recover context after an interruption.
+- **Cursor plugin extras** — This repo also includes an always-apply interception rule and a skill that teaches correct tool arguments.
+
+## Usage examples
+
+**Look up a step before doing work**
+
+```text
+lookup_step(
+  description="read file src/auth.js",
+  run_id="<uuid-for-this-task>"
+)
+```
+
+If `hit` is `true`, use the returned `result` and do not redo the step.
+
+**Save a completed step**
+
+```text
+save_step(
+  step_id="s1",
+  run_id="<same-uuid>",
+  description="read file src/auth.js",
+  result={ ... actual step output ... }
+)
+```
+
+Use the same concise description style for lookup and save so they match.
+
+**Check before editing a file**
+
+```text
+check_conflict(
+  intended_action="edit file src/auth.js",
+  run_id="<same-uuid>"
+)
+```
+
+If `safe` is `false`, stop and report the reason.
+
+**Recover after an interruption**
+
+```text
+run_status(run_id="<same-uuid>")
+```
+
+## Notes and limitations
+
+- Descriptions must be short and consistent (for example `read file src/auth.js`), not the full user prompt and not vague phrases like `do the thing`.
+- Use one UUID `run_id` for an entire task; start a new UUID for a new task.
+- `save_step` should store the real step output, not a summary.
+- Do not save results that contain secrets from env files or credentials.
+- Write / mutating steps may be stored but are not replayed as safe hits.
+- Cache hits only help when the MCP server is reachable and the step was saved earlier under a matching description.
+- Auth tokens are not required yet; when they are, the SSE URL stays the same.
+
+## Contact
+
+Questions, support, or product updates: [https://cachelayer.org/](https://cachelayer.org/)
+
+## Legal
+
+This project is licensed under the **Apache License 2.0**.
+
+You may use, reproduce, and distribute this software under the terms of that license. See the full text in [`LICENSE`](./LICENSE), including the patent grant, redistribution conditions, and disclaimer of warranties.
+
+Copyright notices and license terms in `LICENSE` control. Nothing in this README grants rights beyond the Apache License 2.0.
