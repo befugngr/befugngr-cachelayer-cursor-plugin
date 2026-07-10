@@ -1,6 +1,6 @@
 # CacheLayer for Cursor
 
-Skip redoing work your Cursor agent already did. CacheLayer caches agent steps so matching work can be reused instead of repeated from scratch.
+CacheLayer is an MCP server for Cursor that caches each step your agent takes — reading a file, running a command, fixing a test, and so on. Before the agent does a step, it checks CacheLayer for a prior result; on a hit it reuses that result instead of doing the work again. Before edits or destructive commands it also checks for conflicts, and after each step it saves the result for next time.
 
 Website: [https://cachelayer.org/](https://cachelayer.org/)
 
