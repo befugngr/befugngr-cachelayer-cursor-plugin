@@ -7,68 +7,49 @@ description: >-
 
 # CacheLayer tools
 
-Use these tools exactly as specified. Vague or inconsistent arguments break cache hits.
+Vague or inconsistent arguments break cache hits.
 
-## `run_id` discipline
+## `run_id`
 
-- One UUID per task.
-- Reuse that same `run_id` across every step of that task (`lookup_step`, `save_step`, `check_conflict`, `run_status`).
-- Generate a new UUID when starting a new task.
+- One UUID per task
+- Reuse it for every `lookup_step`, `save_step`, `check_conflict`, `run_status` in that task
+- New UUID for a new task
 
 ## `lookup_step(description, run_id)`
 
-Call **before** any native step.
+Call before any native step.
 
-- `description` **MUST** be a concise, normalized statement of the step's intent — not a paragraph, not the raw user prompt.
-- Use the same phrasing style every time so lookups match saves.
+- `description` MUST be a concise, normalized intent statement, not a paragraph, not the raw user prompt
+- Same phrasing style every time so lookups match saves
 
-Good examples:
-
-- `read file src/auth.js`
-- `resolve failing test in test_login.py`
-- `list files in packages/api`
-
-Bad examples:
-
-- `do the thing`
-- the full user prompt pasted verbatim
-- a multi-sentence plan
+Good: `read file src/auth.js`, `resolve failing test in test_login.py`  
+Bad: `do the thing`, full user prompt, multi-sentence plan
 
 ## `save_step(step_id, run_id, description, result)`
 
-Call **after** every completed step (including after using a cache hit).
+Call after every completed step (including after a cache hit).
 
-- `description` **MUST** match the phrasing style used in `lookup_step` for that step.
-- `result` **MUST** contain the actual output/content produced by the step, not a summary of it.
-- `step_id` identifies the step within the run (e.g. `s1`, `s2`).
+- `description` MUST match lookup phrasing
+- `result` MUST be the actual output, not a summary
 
 ## `check_conflict(intended_action, run_id)`
 
-Call **before** any file edit or destructive terminal command.
+Call before file edits or destructive commands.
 
-- `intended_action` **MUST** name the target explicitly (file path, resource, order id, etc.) so conflict detection can match it.
-
-Good: `edit file src/auth.js` / `delete file /tmp/out.txt`  
-Bad: `make a change` / `clean up`
-
-If `"safe": false`, stop. Do not proceed.
+- Name the target explicitly (path, resource, id)
+- If `safe` is false, stop
 
 ## `run_status(run_id)`
 
-Use to recover context after interruption. Pass the task's `run_id`.
+Recover context after interruption.
 
 ## On a hit
 
-When `lookup_step` returns `"hit": true`:
+Use the returned `result`. Do not redo. Do not re-verify unless conflict check demands it.
 
-1. Use the returned `result` directly.
-2. Do **not** redo the step.
-3. Do **not** re-verify unless the interception rule's conflict check demands it.
-4. Still call `save_step` for the step as required by the rule (or follow the rule's after-step requirement for the overall flow).
+## Do not
 
-## What NOT to do
-
-- Do **not** save steps whose `result` contains secrets from env files or credentials.
-- Do **not** call `lookup_step` with vague descriptions (`do the thing`, `fix it`, `continue`).
-- Do **not** skip `save_step` because a step seems trivial.
-- Do **not** call `lookup_step` before CacheLayer tools themselves (avoids infinite loops).
+- Save secrets from env files
+- Use vague descriptions
+- Skip `save_step` for "trivial" steps
+- Call `lookup_step` before CacheLayer tools themselves

@@ -1,6 +1,8 @@
 {
   "name": "cachelayer",
-  "description": "CacheLayer step caching for Cursor agents — skip redoing work your agent already did",
+  "description": "CacheLayer step caching for Cursor agents. Skip redoing work your agent already did.",
   "version": "1.0.0",
-  "author": { "name": "CacheLayer" }
+  "author": { "name": "CacheLayer" },
+  "homepage": "https://cachelayer.org/",
+  "license": "Apache-2.0"
 }

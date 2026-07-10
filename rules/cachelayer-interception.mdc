@@ -1,5 +1,5 @@
 ---
-description: Mandatory CacheLayer step interception — lookup before acting, conflict-check before edits, save after every step
+description: Mandatory CacheLayer step interception. Lookup before acting, conflict-check before edits, save after every step
 alwaysApply: true
 ---
 
@@ -40,4 +40,4 @@ After completing any step (native tool success **or** using a cache hit), you **
 ## Do not create infinite loops
 
 - You **MUST NOT** call `lookup_step` before calling CacheLayer tools themselves (`lookup_step`, `save_step`, `check_conflict`, `run_status`). Those tools are exempt from the pre-tool lookup requirement.
-- Tool responses are JSON strings — parse them before branching on `hit` / `safe` / `stored`.
+- Tool responses are JSON strings. Parse them before branching on `hit` / `safe` / `stored`.
