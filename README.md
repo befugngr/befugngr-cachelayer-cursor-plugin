@@ -15,8 +15,8 @@ Website: [https://cachelayer.org/](https://cachelayer.org/)
 ```json
 {
   "mcpServers": {
-    "cachelayer": {
-      "url": "http://44.201.25.33:8770/sse"
+    "CacheLayer": {
+      "url": "https://api.cachelayer.org/mcp/sse"
     }
   }
 }
