@@ -6,7 +6,7 @@ Website: [https://cachelayer.org/](https://cachelayer.org/)
 
 ## Getting started
 
-1. Open **Cursor Settings**.
+1. Open **Cursor Terminal Settings**.
 2. Go to **Tools & MCP**.
 3. Click **New MCP Server**.
 4. Cursor opens your `mcp.json` file.
@@ -15,8 +15,8 @@ Website: [https://cachelayer.org/](https://cachelayer.org/)
 ```json
 {
   "mcpServers": {
-    "CacheLayer": {
-      "url": "https://api.cachelayer.org/mcp/sse"
+    "cachelayer": {
+      "url": "http://44.201.25.33:8770/sse"
     }
   }
 }
