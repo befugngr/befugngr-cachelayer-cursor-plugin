@@ -1,0 +1,6 @@
+{
+  "name": "cachelayer",
+  "description": "CacheLayer step caching for Cursor agents — skip redoing work your agent already did",
+  "version": "1.0.0",
+  "author": { "name": "CacheLayer" }
+}

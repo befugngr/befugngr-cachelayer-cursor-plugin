@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "CacheLayer": {
+      "url": "https://api.cachelayer.org/mcp/sse"
+    }
+  }
+}
