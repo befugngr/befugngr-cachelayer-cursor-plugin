@@ -26,8 +26,8 @@ Add the token under the `CacheLayer` entry in `mcp.json` (for example as a heade
 ```json
 {
   "mcpServers": {
-    "CacheLayer": {
-      "url": "https://api.cachelayer.org/mcp/sse"
+    "cachelayer": {
+      "url": "http://44.201.25.33:8770/sse"
     }
   }
 }
