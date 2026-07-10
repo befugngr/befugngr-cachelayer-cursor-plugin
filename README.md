@@ -1,6 +1,6 @@
 # CacheLayer for Cursor
 
-CacheLayer is an MCP server for Cursor that caches each step your agent takes — reading a file, running a command, fixing a test, and so on. Before the agent does a step, it checks CacheLayer for a prior result; on a hit it reuses that result instead of doing the work again. Before edits or destructive commands it also checks for conflicts, and after each step it saves the result for next time.
+This MCP connects Cursor agents to CacheLayer step caching. Agents call `lookup_step` before acting, `check_conflict` before edits, and `save_step` after each step so matching work can be reused.
 
 Website: [https://cachelayer.org/](https://cachelayer.org/)
 
@@ -31,11 +31,11 @@ When auth ships, add your token under the `CacheLayer` entry in `mcp.json` witho
 
 ## Features
 
-- **Step lookup** — Before acting, agents can call `lookup_step` to reuse a prior result when there is a hit.
-- **Step save** — After a step finishes, agents call `save_step` so the result is available next time.
-- **Conflict checks** — Before file edits or destructive commands, agents call `check_conflict` and stop if the action is unsafe.
-- **Run tracking** — One `run_id` per task keeps related steps grouped; `run_status` helps recover context after an interruption.
-- **Cursor plugin extras** — This repo also includes an always-apply interception rule and a skill that teaches correct tool arguments.
+- **Step lookup:** call `lookup_step` before acting; reuse the result on a hit.
+- **Step save:** call `save_step` after each step so it can be reused later.
+- **Conflict checks:** call `check_conflict` before file edits or destructive commands; stop if unsafe.
+- **Run tracking:** one `run_id` per task; use `run_status` to recover after an interruption.
+- **Plugin extras:** always-on interception rule and tool-usage skill included in this repo.
 
 ## Usage examples
 
