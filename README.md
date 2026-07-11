@@ -6,14 +6,17 @@ Site: https://cachelayer.org/
 
 ## Install
 
-1. Cursor Settings → Tools & MCP → New MCP Server
-2. Paste into `mcp.json` (merge with existing servers):
+1. Open Cursor MCP settings (Settings → **Tools & MCP**, or the **Customize** / MCP page depending on Cursor version) → New MCP Server, or edit `~/.cursor/mcp.json`.
+2. Merge this server entry (keep your other servers):
 
 ```json
 {
   "mcpServers": {
     "CacheLayer": {
-      "url": "https://api.cachelayer.org/mcp/sse"
+      "url": "https://api.cachelayer.org/mcp/sse",
+      "headers": {
+        "Authorization": "Bearer YOUR_clct_TOKEN"
+      }
     }
   }
 }
@@ -22,7 +25,7 @@ Site: https://cachelayer.org/
 3. Save. CacheLayer should appear in the MCP list.
 4. Optional: copy this repo to `~/.cursor/plugins/local/cachelayer` and reload Cursor for the always-on rule and skill.
 
-Server must be reachable. When auth ships, add the token under `CacheLayer` without changing the URL.
+Auth is required. Get a connect token (`clct_...`) from your CacheLayer account and put it in `headers.Authorization`. Unauthenticated requests return **401**. If your Cursor build expands env vars in MCP config, you can use `Bearer ${env:CACHELAYER_CONNECT_TOKEN}` instead of pasting the token.
 
 ## Tools
 
