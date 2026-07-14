@@ -7,7 +7,7 @@ description: >-
 
 # CacheLayer tools
 
-Vague or inconsistent arguments break cache hits.
+Vague or inconsistent arguments break cache hits. Set `CACHELAYER_KEY` to your `clct_<your-token>` connect token.
 
 ## `run_id`
 

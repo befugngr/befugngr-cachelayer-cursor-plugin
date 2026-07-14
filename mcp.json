@@ -1,9 +1,9 @@
 {
   "mcpServers": {
-    "CacheLayer": {
-      "url": "https://api.cachelayer.org/mcp/sse",
+    "cachelayer": {
+      "url": "https://api.cachelayer.org/mcp",
       "headers": {
-        "Authorization": "Bearer ${CACHELAYER_CONNECT_TOKEN}"
+        "Authorization": "Bearer ${env:CACHELAYER_KEY}"
       }
     }
   }

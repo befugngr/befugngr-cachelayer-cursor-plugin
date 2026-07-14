@@ -4,28 +4,46 @@ MCP for Cursor agents: look up, save, and conflict-check cached steps so repeate
 
 Site: https://cachelayer.org/
 
-## Install
+## Install (plugin — recommended)
 
-1. Open Cursor MCP settings (Settings → **Tools & MCP**, or the **Customize** / MCP page depending on Cursor version) → New MCP Server, or edit `~/.cursor/mcp.json`.
+1. Clone into Cursor’s local plugin dir:
+
+```bash
+git clone https://github.com/befugngr/cachelayer-cursor-plugin \
+  ~/.cursor/plugins/local/cachelayer
+```
+
+(If the GitHub repo still redirects from the old `befugngr-cachelayer-cursor-plugin` slug, either URL works until renamed.)
+
+2. Reload Cursor. The plugin loads `mcp.json`, `rules/`, and `skills/` from the package root (Cursor plugin discovery — not a project `.cursor/` folder).
+
+3. Set `CACHELAYER_KEY` in your environment to your `clct_<your-token>` connect token, then restart Cursor so `${env:CACHELAYER_KEY}` resolves.
+
+## Install (project MCP only)
+
+1. Open Cursor MCP settings (Settings → **Tools & MCP**) or edit `~/.cursor/mcp.json` / `.cursor/mcp.json`.
 2. Merge this server entry (keep your other servers):
 
 ```json
 {
   "mcpServers": {
-    "CacheLayer": {
-      "url": "https://api.cachelayer.org/mcp/sse",
+    "cachelayer": {
+      "url": "https://api.cachelayer.org/mcp",
       "headers": {
-        "Authorization": "Bearer YOUR_clct_TOKEN"
+        "Authorization": "Bearer ${env:CACHELAYER_KEY}"
       }
     }
   }
 }
 ```
 
-3. Save. CacheLayer should appear in the MCP list.
-4. Optional: copy this repo to `~/.cursor/plugins/local/cachelayer` and reload Cursor for the always-on rule and skill.
+Cursor expands `${env:NAME}` only — bare `${NAME}` is sent literally and yields **401**.
 
-Auth is required. Get a connect token (`clct_...`) from your CacheLayer account and put it in `headers.Authorization`. Unauthenticated requests return **401**. If your Cursor build expands env vars in MCP config, you can use `Bearer ${env:CACHELAYER_CONNECT_TOKEN}` instead of pasting the token.
+## Auth
+
+Auth is required. Get a connect token (`clct_<your-token>`) from your CacheLayer account. Unauthenticated requests return **401**.
+
+MCP URL: `https://api.cachelayer.org/mcp` (streamable HTTP; nginx also serves legacy `/mcp/sse`).
 
 ## Tools
 
@@ -35,6 +53,17 @@ Auth is required. Get a connect token (`clct_...`) from your CacheLayer account 
 - `run_status(run_id)` to recover after interruption
 
 One UUID `run_id` per task. Keep descriptions short and consistent (e.g. `read file src/auth.js`).
+
+## Layout
+
+```text
+.cursor-plugin/plugin.json
+mcp.json                          — MCP server (plugin-root; required by Cursor plugins)
+rules/cachelayer-interception.mdc — always-on interception rule
+skills/cachelayer-tools/SKILL.md
+LICENSE
+README.md
+```
 
 ## Limits
 

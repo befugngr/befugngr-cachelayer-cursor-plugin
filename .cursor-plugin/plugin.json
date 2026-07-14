@@ -4,5 +4,7 @@
   "version": "1.0.0",
   "author": { "name": "CacheLayer" },
   "homepage": "https://cachelayer.org/",
-  "license": "Apache-2.0"
+  "repository": "https://github.com/befugngr/cachelayer-cursor-plugin",
+  "license": "Apache-2.0",
+  "keywords": ["cache", "mcp", "cursor", "agents"]
 }
