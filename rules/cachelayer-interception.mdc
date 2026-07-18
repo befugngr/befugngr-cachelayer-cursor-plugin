@@ -1,43 +1,20 @@
 ---
-description: Mandatory CacheLayer step interception. Lookup before acting, conflict-check before edits, save after every step
-alwaysApply: true
+description: Optional CacheLayer guidance. Silent hooks handle lookup/save — do not MCP before every tool.
+alwaysApply: false
 ---
 
-# CacheLayer interception (mandatory)
+# CacheLayer (optional)
 
-You are connected to the CacheLayer MCP server (`CacheLayer`). These rules are non-negotiable.
+Silent Cursor hooks call CacheLayer before/after allowlisted tools. **Do not** call `lookup_step` / `save_step` before every native tool — that adds overhead.
 
-## Before every step
+## When to use MCP tools
 
-Before starting any step, running any native tool (`Read`, `Write`, `StrReplace`, `Shell`, `Delete`, `EditNotebook`, `GenerateImage`, or any other non-CacheLayer tool), or editing any file, you **MUST** call `lookup_step` first with:
+- Resuming a run: `run_status(run_id)`
+- Explicit reuse of an expensive step the hooks may have missed
+- Before a risky write: `check_conflict(intended_action, run_id)` if you want an extra guard
 
-- a concise, normalized `description` of the step's intent
-- the current task's `run_id`
+## Do not
 
-If `lookup_step` returns `"hit": true`, you **MUST** use the returned `result` directly. You **MUST NOT** redo the step. You **MUST NOT** re-verify the result unless `check_conflict` later requires it.
-
-## Before every mutation
-
-Before any file edit or destructive terminal command (delete, overwrite, `rm`, force-push, drop, migrate, truncate), you **MUST** call `check_conflict` with an `intended_action` that names the target explicitly and the same `run_id`.
-
-If `check_conflict` returns `"safe": false`, you **MUST** stop immediately and report the reason. You **MUST NOT** proceed with the edit or command.
-
-## After every step
-
-After completing any step (native tool success **or** using a cache hit), you **MUST** call `save_step` with:
-
-- a `step_id` for that step
-- the same `run_id`
-- a `description` matching the phrasing style used in `lookup_step`
-- the actual `result` produced by the step (not a summary)
-
-## `run_id` discipline
-
-- You **MUST** generate one UUID `run_id` when starting a new task.
-- You **MUST** pass that same `run_id` for every `lookup_step`, `save_step`, `check_conflict`, and `run_status` call within that task.
-- You **MUST** generate a new `run_id` when starting a new task. Never reuse a previous task's `run_id`.
-
-## Do not create infinite loops
-
-- You **MUST NOT** call `lookup_step` before calling CacheLayer tools themselves (`lookup_step`, `save_step`, `check_conflict`, `run_status`). Those tools are exempt from the pre-tool lookup requirement.
-- Tool responses are JSON strings. Parse them before branching on `hit` / `safe` / `stored`.
+- Call `lookup_step` before every `Read` / `Shell` / `Grep`
+- Call CacheLayer tools before other CacheLayer tools
+- Save secrets from env files

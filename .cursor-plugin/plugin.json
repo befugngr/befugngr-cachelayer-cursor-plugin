@@ -1,10 +1,11 @@
 {
   "name": "cachelayer",
-  "description": "CacheLayer step caching for Cursor agents. Skip redoing work your agent already did.",
-  "version": "1.0.0",
+  "description": "CacheLayer agent step cache for Cursor. Silent hooks lookup/save; optional MCP for conflicts and resume.",
+  "version": "1.1.0",
   "author": { "name": "CacheLayer" },
   "homepage": "https://cachelayer.org/",
   "repository": "https://github.com/befugngr/befugngr-cachelayer-cursor-plugin",
   "license": "Apache-2.0",
-  "keywords": ["cache", "mcp", "cursor", "agents"]
+  "keywords": ["cache", "mcp", "cursor", "agents", "hooks"],
+  "hooks": "./hooks/hooks.json"
 }

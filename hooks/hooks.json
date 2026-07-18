@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "hooks": {
+    "preToolUse": [
+      {
+        "command": "./scripts/pre_tool_use.sh",
+        "matcher": "Shell|Read|Grep|Glob|WebSearch|WebFetch|Task",
+        "timeout": 3
+      }
+    ],
+    "postToolUse": [
+      {
+        "command": "./scripts/post_tool_use.sh",
+        "matcher": "Shell|Read|Grep|Glob|WebSearch|WebFetch|Task",
+        "timeout": 3
+      }
+    ]
+  }
+}

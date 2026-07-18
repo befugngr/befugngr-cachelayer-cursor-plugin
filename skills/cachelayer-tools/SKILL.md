@@ -1,55 +1,43 @@
 ---
 name: cachelayer-tools
 description: >-
-  Correct usage of CacheLayer MCP tools. Consult any time the agent is about
-  to use CacheLayer's lookup_step, save_step, check_conflict, or run_status tools.
+  Optional CacheLayer MCP tools. Prefer silent hooks for lookup/save. Use MCP
+  for run_status, check_conflict on risky writes, or explicit expensive reuse.
 ---
 
 # CacheLayer tools
 
-Vague or inconsistent arguments break cache hits. Set `CACHELAYER_KEY` to your `clct_<your-token>` connect token.
+Set `CACHELAYER_KEY` to your `clct_<token>`. Silent **hooks** handle most lookup/save — do not MCP-tax every step.
 
-## `run_id`
+## Prefer hooks (default)
 
-- One UUID per task
-- Reuse it for every `lookup_step`, `save_step`, `check_conflict`, `run_status` in that task
-- New UUID for a new task
+Cursor `preToolUse` / `postToolUse` scripts call:
 
-## `lookup_step(description, run_id)`
+- `POST /hooks/pre-tool-use` (lookup; on hit the tool is skipped)
+- `POST /hooks/post-tool-use` (save)
 
-Call before any native step.
+Fail-open, ~2s timeout. No model round-trip.
 
-- `description` MUST be a concise, normalized intent statement, not a paragraph, not the raw user prompt
-- Same phrasing style every time so lookups match saves
+## When to call MCP
 
-Good: `read file src/auth.js`, `resolve failing test in test_login.py`  
-Bad: `do the thing`, full user prompt, multi-sentence plan
+| Tool | Use when |
+|------|----------|
+| `run_status` | Resume after interruption |
+| `check_conflict` | Extra guard before risky writes/destructive commands |
+| `lookup_step` / `save_step` | Explicit reuse of an expensive step hooks may miss |
 
-## `save_step(step_id, run_id, description, result)`
+## Descriptor style (if you call MCP)
 
-Call after every completed step (including after a cache hit).
+Lowercase **verb + target**:
 
-- `description` MUST match lookup phrasing
-- `result` MUST be the actual output, not a summary
+- `read file <path>`
+- `run command <cmd>`
+- `search <query>`
 
-## `check_conflict(intended_action, run_id)`
-
-Call before file edits or destructive commands.
-
-- Name the target explicitly (path, resource, id)
-- If `safe` is false, stop
-
-## `run_status(run_id)`
-
-Recover context after interruption.
-
-## On a hit
-
-Use the returned `result`. Do not redo. Do not re-verify unless conflict check demands it.
+Same phrasing on lookup and save. One UUID `run_id` per task.
 
 ## Do not
 
+- Lookup/save before every native tool (hooks already do this silently)
 - Save secrets from env files
-- Use vague descriptions
-- Skip `save_step` for "trivial" steps
-- Call `lookup_step` before CacheLayer tools themselves
+- Call CacheLayer tools before other CacheLayer tools
