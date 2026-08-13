@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "cachelayer": {
+      "url": "https://api.cachelayer.org/mcp/http",
+      "headers": {
+        "Authorization": "Bearer ${env:CACHELAYER_KEY}"
+      }
+    }
+  }
+}

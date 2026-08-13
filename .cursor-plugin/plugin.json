@@ -1,0 +1,11 @@
+{
+  "name": "cachelayer",
+  "description": "CacheLayer managed keys for Cursor. Connect token (CACHELAYER_KEY) enables step caching via hooks and MCP.",
+  "version": "1.1.1",
+  "author": { "name": "CacheLayer" },
+  "homepage": "https://cachelayer.org/",
+  "repository": "https://github.com/befugngr/befugngr-cachelayer-cursor-plugin",
+  "license": "Apache-2.0",
+  "keywords": ["cache", "mcp", "cursor", "agents", "hooks"],
+  "hooks": "./hooks/hooks.json"
+}
