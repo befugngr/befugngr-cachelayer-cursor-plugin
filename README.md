@@ -59,3 +59,16 @@ Fully quit and reopen Cursor.
 The plugin also bundles a local, Python 3 stdlib-only MCP server alongside the managed-keys cache MCP. It provides `verify_edit` (CRITIC), `run_affected_tests` (TIA), and `debug_failure` for compact one-call feedback in the current workspace. These tools are optional: missing project analyzers degrade gracefully with install guidance, while the remote `cachelayer` server and `CACHELAYER_KEY` flow remain unchanged.
 
 For richer selection and diagnosis, projects may optionally install `pytest-testmon`/Scalpel, TypeScript/ESLint/Jest, or Java tooling such as JaCoCo, Ekstazi, Joern, Flacoco, and GZoltar.
+
+`run_affected_tests` picks the strongest selection the project supports, and says which one it used:
+
+| Project state | Selection |
+| --- | --- |
+| `pytest-testmon` installed | testmon's own impacted set |
+| `.coverage` recorded with `pytest --cov --cov-context=test` | the exact tests that executed the changed lines |
+| neither | changed modules plus their importers, mapped to matching test files |
+| Jest | `jest --findRelatedTests` |
+| Maven with a JaCoCo report | test classes referencing changed classes the suite covers, and a list of changed classes with no coverage |
+| Maven or Gradle without a report | changed classes mapped to matching test classes |
+
+When nothing maps, it runs nothing and says so rather than falling back to the full suite.
