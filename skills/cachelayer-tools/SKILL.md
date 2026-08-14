@@ -1,43 +1,27 @@
 ---
 name: cachelayer-tools
 description: >-
-  Optional CacheLayer MCP tools. Prefer silent hooks for lookup/save. Use MCP
-  for run_status, check_conflict on risky writes, or explicit expensive reuse.
+  Optional CacheLayer cache and local CRITIC/TIA/Debug tools. Prefer silent
+  cache hooks; use each local loop-cutter once at the appropriate point.
 ---
 
 # CacheLayer tools
 
-Set `CACHELAYER_KEY` to your `clct_<token>`. Silent **hooks** handle most lookup/save — do not MCP-tax every step.
+Set `CACHELAYER_KEY` to your `clct_<token>`. Silent hooks handle normal remote cache lookup/save; do not MCP-tax every step.
 
-## Prefer hooks (default)
+## Local loop-cutters
 
-Cursor `preToolUse` / `postToolUse` scripts call:
+- Call `verify_edit` **once after a coherent code edit** with the edited paths. It gates typecheck, lint, then affected tests. Skip docs-only changes.
+- Call `run_affected_tests` **once after edits** when targeted test evidence is needed and `verify_edit` did not already run them.
+- Call `debug_failure` **once only after a real failure**, passing the traceback or failing test output. Do not call it on passing runs or start a second debug loop.
+- Missing mypy, ruff, pytest-testmon, Jest, JaCoCo, Ekstazi, Scalpel, Joern, Flacoco, or GZoltar is an expected degrade path; use the returned install hint or bounded fallback.
 
-- `POST /hooks/pre-tool-use` (lookup; on hit the tool is skipped)
-- `POST /hooks/post-tool-use` (save)
+## Remote cache MCP
 
-Fail-open, ~2s timeout. No model round-trip.
-
-## When to call MCP
-
-| Tool | Use when |
-|------|----------|
-| `run_status` | Resume after interruption |
-| `check_conflict` | Extra guard before risky writes/destructive commands |
-| `lookup_step` / `save_step` | Explicit reuse of an expensive step hooks may miss |
-
-## Descriptor style (if you call MCP)
-
-Lowercase **verb + target**:
-
-- `read file <path>`
-- `run command <cmd>`
-- `search <query>`
-
-Same phrasing on lookup and save. One UUID `run_id` per task.
+Use `run_status` after interruption, `check_conflict` before risky writes, and `lookup_step` / `save_step` only for explicit expensive reuse. Descriptors are lowercase verb + target, such as `read file <path>` or `run command <cmd>`; keep one `run_id` per task.
 
 ## Do not
 
-- Lookup/save before every native tool (hooks already do this silently)
-- Save secrets from env files
+- Call MCP before every Read/Grep/native tool
+- Save secrets from environment files
 - Call CacheLayer tools before other CacheLayer tools

@@ -53,3 +53,9 @@ launchctl setenv CACHELAYER_KEY 'clct_<your-token>'
 ## 3. Restart Cursor
 
 Fully quit and reopen Cursor.
+
+## Optional local loop-cutters
+
+The plugin also bundles a local, Python 3 stdlib-only MCP server alongside the managed-keys cache MCP. It provides `verify_edit` (CRITIC), `run_affected_tests` (TIA), and `debug_failure` for compact one-call feedback in the current workspace. These tools are optional: missing project analyzers degrade gracefully with install guidance, while the remote `cachelayer` server and `CACHELAYER_KEY` flow remain unchanged.
+
+For richer selection and diagnosis, projects may optionally install `pytest-testmon`/Scalpel, TypeScript/ESLint/Jest, or Java tooling such as JaCoCo, Ekstazi, Joern, Flacoco, and GZoltar.
