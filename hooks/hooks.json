@@ -4,18 +4,18 @@
     "preToolUse": [
       {
         "command": "bash ./scripts/pre_tool_use.sh",
-        "matcher": "Shell|Read|Grep|Glob|WebSearch|WebFetch|Task",
+        "matcher": "Read|Grep|Glob|WebSearch|WebFetch|mcp__.+__(read|grep|glob|search|fetch).*",
         "timeout": 3
       }
     ],
     "postToolUse": [
       {
         "command": "bash ./scripts/post_tool_use.sh",
-        "matcher": "Shell|Read|Grep|Glob|WebSearch|WebFetch|Task",
+        "matcher": "Read|Grep|Glob|WebSearch|WebFetch|mcp__.+__(read|grep|glob|search|fetch).*",
         "timeout": 3
       },
       {
-        "command": "bash ./agent/run_critic.sh",
+        "command": "bash ./cachelayer_tools/run_verify_hook.sh",
         "matcher": "Write|Edit|ApplyPatch|apply_patch|MultiEdit|NotebookEdit|create_file|edit_file|write_file|str_replace_editor|replace_string_in_file|insert_edit_into_file|multi_replace_string_in_file",
         "timeout": 15,
         "failClosed": false

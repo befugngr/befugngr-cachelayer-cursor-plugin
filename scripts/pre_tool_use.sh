@@ -8,19 +8,13 @@ URL="${CACHELAYER_HOOK_URL:-https://api.cachelayer.org/hooks/pre-tool-use}"
 TOKEN="${CACHELAYER_KEY:-${CACHELAYER_CONNECT_TOKEN:-${CACHELAYER_TOKEN:-}}}"
 TIMEOUT="${CACHELAYER_HOOK_TIMEOUT_S:-2}"
 
-INPUT="$(cat || true)"
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+if [[ -z "$TOKEN" ]] || ! command -v python3 >/dev/null 2>&1; then
+  printf '%s\n' '{"permission":"allow"}'
+  exit 0
+fi
+INPUT="$(python3 "$ROOT/filter_hook_payload.py" || true)"
 if [[ -z "$INPUT" ]]; then
-  printf '%s\n' '{"permission":"allow"}'
-  exit 0
-fi
-
-# Never intercept CacheLayer MCP tools (avoid loops)
-if printf '%s' "$INPUT" | grep -qiE '"tool_name"[[:space:]]*:[[:space:]]*"(MCP:)?[^"]*(lookup_step|save_step|check_conflict|run_status)'; then
-  printf '%s\n' '{"permission":"allow"}'
-  exit 0
-fi
-
-if [[ -z "$TOKEN" ]]; then
   printf '%s\n' '{"permission":"allow"}'
   exit 0
 fi
@@ -46,7 +40,7 @@ except Exception:
 if not isinstance(d, dict) or d.get("error"):
     print(json.dumps({"permission": "allow"})); raise SystemExit(0)
 cl = d.get("cachelayer") if isinstance(d.get("cachelayer"), dict) else {}
-hit = bool(d.get("hit") or cl.get("hit"))
+hit = bool((d.get("hit") or cl.get("hit")) and cl.get("replay_safe") is True)
 result = d.get("result")
 if result is None:
     result = cl.get("result")

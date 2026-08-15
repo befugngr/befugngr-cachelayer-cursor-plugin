@@ -8,3 +8,5 @@ __pycache__/
 BUILD_REPORT.md
 .env
 .env.*
+
+.cachelayer/

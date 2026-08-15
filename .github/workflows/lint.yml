@@ -13,7 +13,7 @@ jobs:
         run: |
           python3 - <<'PY'
           import json, sys
-          for p in [".cursor-plugin/plugin.json", "mcp.json"]:
+          for p in [".cursor-plugin/plugin.json", "mcp.json", "hooks/hooks.json"]:
               with open(p) as f:
                   json.load(f)
               print(f"OK json {p}")
@@ -37,3 +37,10 @@ jobs:
           PY
       - name: Rules presence
         run: test -f rules/cachelayer-interception.mdc && test -f skills/cachelayer-tools/SKILL.md
+      - name: Python syntax check
+        run: python3 -m py_compile cachelayer_tools/*.py scripts/*.py
+      - name: Shell syntax check
+        run: |
+          for script in cachelayer_tools/*.sh scripts/*.sh; do
+            test ! -f "$script" || bash -n "$script"
+          done
