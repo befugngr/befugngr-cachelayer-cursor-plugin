@@ -16,7 +16,7 @@
       },
       {
         "command": "bash ./agent/run_critic.sh",
-        "matcher": "Write|Edit|ApplyPatch|MultiEdit|NotebookEdit",
+        "matcher": "Write|Edit|ApplyPatch|apply_patch|MultiEdit|NotebookEdit|create_file|edit_file|write_file|str_replace_editor|replace_string_in_file|insert_edit_into_file|multi_replace_string_in_file",
         "timeout": 15,
         "failClosed": false
       }
