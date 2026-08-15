@@ -13,8 +13,8 @@ Set `CACHELAYER_KEY` to your `clct_<token>`. Silent hooks handle normal remote c
 
 - Call `verify_edit` **once after a coherent code edit** with the edited paths. It gates typecheck, lint, then affected tests. Skip docs-only changes.
 - Call `run_affected_tests` **once after edits** when targeted test evidence is needed and `verify_edit` did not already run them.
-- Call `debug_failure` **once only after a real failure**, passing the traceback or failing test output. Do not call it on passing runs or start a second debug loop.
-- Missing mypy, ruff, pytest-testmon, Jest, JaCoCo, Ekstazi, Scalpel, Joern, Flacoco, or GZoltar is an expected degrade path; use the returned install hint or bounded fallback.
+- `debug_failure` — call once after a real failure with its traceback/output. For verified minimization, also pass `failing_input` and bounded `repro.argv`; do not start a second debug loop.
+- Missing mypy, ruff, pytest-testmon/pytest-cov, Jest, JaCoCo, Ekstazi, Joern, or Flacoco is an expected degrade path; use the returned install hint or bounded fallback.
 
 ## Remote cache MCP
 
