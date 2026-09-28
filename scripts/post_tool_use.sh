@@ -6,6 +6,12 @@ URL="${CACHELAYER_POST_HOOK_URL:-https://api.cachelayer.org/hooks/post-tool-use}
 TOKEN="${CACHELAYER_KEY:-${CACHELAYER_CONNECT_TOKEN:-${CACHELAYER_TOKEN:-}}}"
 TIMEOUT="${CACHELAYER_HOOK_TIMEOUT_S:-2}"
 
+FLOW_HDR=()
+if [[ -n "${CACHELAYER_FLOW_ID:-}" ]]; then
+  FLOW_HDR=(-H "x-amg-flow: ${CACHELAYER_FLOW_ID}")
+fi
+
+
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 if [[ -z "$TOKEN" ]] || ! command -v python3 >/dev/null 2>&1; then
   printf '%s\n' '{}'
@@ -22,6 +28,7 @@ curl -sS --max-time "$TIMEOUT" \
   -X POST "$URL" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer ${TOKEN}" \
+  "${FLOW_HDR[@]}" \
   -d "$INPUT" >/dev/null 2>&1 || true
 
 printf '%s\n' '{}'
