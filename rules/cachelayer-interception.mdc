@@ -1,11 +1,11 @@
 ---
 description: Optional CacheLayer guidance. Silent hooks handle lookup/save — do not MCP before every tool.
-alwaysApply: true
+alwaysApply: false
 ---
 
 # CacheLayer (optional)
 
-Silent Cursor hooks are the control plane. On a CacheLayer HIT that denies a tool, use the injected result — do not re-run that tool. **Do not** call `lookup_step` / `save_step` before every native tool — that adds overhead.
+Silent Cursor hooks call CacheLayer before/after allowlisted tools. **Do not** call `lookup_step` / `save_step` before every native tool — that adds overhead.
 
 ## When to use MCP tools
 
