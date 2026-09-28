@@ -15,10 +15,10 @@ if [[ -z "$TOKEN" ]] || ! command -v python3 >/dev/null 2>&1; then
   exit 0
 fi
 
-INPUT="$(python3 -c 'import json,sys; raw=sys.stdin.buffer.read(262144); 
-try: body=json.loads(raw) if raw else {}
-except Exception: body={}
-print(json.dumps(body if isinstance(body,dict) else {}, separators=(",",":"), default=str))' 2>/dev/null || echo '{}')"
+INPUT="$(python3 "$ROOT/scripts/compact_payload.py" || true)"
+if [[ -z "$INPUT" ]]; then
+  INPUT="{}"
+fi
 
 RESP="$(curl -sS --max-time "$TIMEOUT" \
   -X POST "$URL" \

@@ -15,33 +15,7 @@ if [[ -z "$TOKEN" ]] || ! command -v python3 >/dev/null 2>&1; then
   exit 0
 fi
 
-INPUT="$(python3 - <<'PY' || true
-import json, sys
-raw = sys.stdin.buffer.read(256 * 1024 + 1)
-if len(raw) > 256 * 1024:
-    raise SystemExit(0)
-try:
-    body = json.loads(raw) if raw else {}
-except Exception:
-    body = {}
-if not isinstance(body, dict):
-    body = {}
-# Optional: pull a short tail from transcript_path for flush notes
-path = str(body.get("transcript_path") or body.get("transcriptPath") or "")
-excerpt = ""
-if path:
-    try:
-        with open(path, "r", encoding="utf-8", errors="replace") as f:
-            lines = f.readlines()[-40:]
-        excerpt = "".join(lines)[-6000:]
-    except Exception:
-        excerpt = ""
-if excerpt and "transcript_excerpt" not in body:
-    body["transcript_excerpt"] = excerpt
-sys.stdout.write(json.dumps(body, separators=(",", ":"), default=str))
-PY
-)"
-
+INPUT="$(python3 "$ROOT/scripts/compact_payload.py" || true)"
 if [[ -z "$INPUT" ]]; then
   INPUT="{}"
 fi
