@@ -7,7 +7,7 @@ description: >-
 
 # CacheLayer tools
 
-For LLM calls through Agent OS, set `OPENAI_BASE_URL=https://api.cachelayer.org/cl-gate/v1` and `OPENAI_API_KEY=$CACHELAYER_KEY`.
+For LLM calls through Agent OS: `OPENAI_BASE_URL=https://api.cachelayer.org/cl-gate/v1`, `OPENAI_API_KEY=sk-…` (provider), and header `x-api-key: $CACHELAYER_KEY` (Portfolio `cl_…`).
 
 
 Set `CACHELAYER_KEY` to your `cl_…` or `clct_…`. Silent hooks handle bounded lookup/save for explicit read/search tools only; do not MCP-tax every step.
