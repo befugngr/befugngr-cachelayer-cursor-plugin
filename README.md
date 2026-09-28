@@ -53,3 +53,7 @@ launchctl setenv CACHELAYER_KEY 'cl_<your-token>'
 ## 3. Restart Cursor
 
 Fully quit and reopen Cursor.
+
+## Compact + stable instructions
+
+This plugin ships an always-apply Cursor rule, `AGENTS.md`, and a `preCompact` hook that flushes notes to CacheLayer before compaction.

@@ -1,11 +1,19 @@
 ---
-description: Optional CacheLayer guidance. Silent hooks handle lookup/save — do not MCP before every tool.
-alwaysApply: false
+description: CacheLayer always-on guidance for managed keys installs.
+alwaysApply: true
 ---
 
-# CacheLayer (optional)
+# CacheLayer
 
-Silent Cursor hooks call CacheLayer before/after allowlisted tools. **Do not** call `lookup_step` / `save_step` before every native tool — that adds overhead.
+Silent Cursor hooks call CacheLayer before and after allowlisted tools. Do not call `lookup_step` or `save_step` before every native tool.
+
+## Keep stable
+
+Keep this rule short and unchanged across turns so the editor can reuse the same instruction block.
+
+## When compacting
+
+Preserve active file paths, open tasks, decisions still in force, and errors being fixed. Drop large file dumps and repeated tool outputs.
 
 ## When to use MCP tools
 

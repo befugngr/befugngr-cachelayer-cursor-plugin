@@ -20,6 +20,12 @@
         "timeout": 15,
         "failClosed": false
       }
+    ],
+    "preCompact": [
+      {
+        "command": "bash ./scripts/pre_compact.sh",
+        "timeout": 5
+      }
     ]
   }
 }
