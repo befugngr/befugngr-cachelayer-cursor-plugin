@@ -7,7 +7,7 @@ description: >-
 
 # CacheLayer tools
 
-Set `CACHELAYER_KEY` to your `clct_<token>`. Silent hooks handle bounded lookup/save for explicit read/search tools only; do not MCP-tax every step.
+Set `CACHELAYER_KEY` to your `cl_…` or `clct_…`. Silent hooks handle bounded lookup/save for explicit read/search tools only; do not MCP-tax every step.
 
 ## Local loop-cutters
 
