@@ -6,11 +6,11 @@ set -u
 
 URL="${CACHELAYER_HOOK_URL:-https://api.cachelayer.org/hooks/pre-tool-use}"
 TOKEN="${CACHELAYER_KEY:-${CACHELAYER_CONNECT_TOKEN:-${CACHELAYER_TOKEN:-}}}"
-TIMEOUT="${CACHELAYER_HOOK_TIMEOUT_S:-2}"
+TIMEOUT="${CACHELAYER_HOOK_TIMEOUT_S:-0.5}"
 
 FLOW_HDR=()
 if [[ -n "${CACHELAYER_FLOW_ID:-}" ]]; then
-  FLOW_HDR=(-H "x-amg-flow: ${CACHELAYER_FLOW_ID}")
+  FLOW_HDR=(-H "x-cachelayer-flow: ${CACHELAYER_FLOW_ID}")
 fi
 
 
@@ -66,8 +66,10 @@ if hit and result is not None:
     # Deny skips the native tool; agent_message feeds the cached result.
     print(json.dumps({
         "permission": "deny",
+        "continue": False,
         "agent_message": msg,
         "user_message": "CacheLayer reused a prior step result.",
+        "updatedToolOutput": result,
     }))
     raise SystemExit(0)
 # Miss: allow; optionally hint via empty

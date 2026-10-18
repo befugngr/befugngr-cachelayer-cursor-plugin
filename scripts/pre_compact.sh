@@ -8,7 +8,7 @@ TIMEOUT="${CACHELAYER_HOOK_TIMEOUT_S:-3}"
 
 FLOW_HDR=()
 if [[ -n "${CACHELAYER_FLOW_ID:-}" ]]; then
-  FLOW_HDR=(-H "x-amg-flow: ${CACHELAYER_FLOW_ID}")
+  FLOW_HDR=(-H "x-cachelayer-flow: ${CACHELAYER_FLOW_ID}")
 fi
 
 if [[ -z "$TOKEN" ]] || ! command -v python3 >/dev/null 2>&1; then
